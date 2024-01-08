@@ -19,7 +19,7 @@
             <div class="mt-6 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
                 <div v-for="product in store.products" :key="product"
                     class="relative m-5 w-full max-w-xs overflow-hidden rounded-lg bg-white shadow-md card-transit">
-                    <router-link :to="{ name: 'CartersProductDetails', params: { id: product.id } }">
+                    <router-link :to="'/carters-product/' + product.id">
                         <div>
                             <img class="h-60 rounded-t-lg object-cover w-full" :src="product.productImg" />
                         </div>

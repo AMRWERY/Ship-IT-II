@@ -31,7 +31,7 @@ export const useCartersProductsStore = defineStore("carters-products", {
     async getProductById(id) {
       const docSnap = await getDoc(doc(db, "carters-products", id));
       if (docSnap.exists()) {
-        let product = { ...docSnap.data(), title: id };
+        let product = { ...docSnap.data(), id: id };
         // console.log(product);
         this.selectedProduct = product;
       }

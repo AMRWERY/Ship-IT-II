@@ -181,10 +181,15 @@
                     <span class="font-medium text-md mt-1 ml-1 line-through text-gray-500"
                         v-if="productDetails?.originalPrice">EGP{{ productDetails?.originalPrice
                         }}</span>
-                    <button type="button" @click="addToCart"
-                        class="ml-auto inline-flex items-center justify-center text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded transition-all duration-200 ease-in-out focus:shadow">
-                        <i class="fa-solid fa-basket-shopping shrink-0 mr-3 h-5 w-5"></i>
-                        Buy Now
+                    <button @click="addToCart" :class="{
+                            'bg-red-500 hover:bg-red-600': isAddingToCart,
+                            'bg-indigo-500 hover:bg-indigo-600': !isAddingToCart,
+                        }"
+                        class="ml-auto inline-flex items-center justify-center text-white border-0 py-2 px-6 focus:outline-none rounded transition-all duration-200 ease-in-out focus:shadow"
+                        :disabled="isAddingToCart">
+                        <i v-if="isAddingToCart" class="fa-solid fa-spinner animate-spin mr-3 h-5 w-5"></i>
+                        <i v-else class="fa-solid fa-basket-shopping mr-3 h-5 w-5"></i>
+                        {{ isAddingToCart ? 'Adding...' : 'Buy Now' }}
                     </button>
                 </div>
             </div>
@@ -250,6 +255,7 @@ const router = useRouter()
 const productDetails = ref(null);
 const productId = ref('');
 const selectedImg = ref(null);
+const isAddingToCart = ref(false);
 
 onMounted(() => {
     productId.value = router.currentRoute.value.params.id;
@@ -269,5 +275,9 @@ const selectCard = (imgProperty) => {
 
 const addToCart = () => {
     store.addToCart(productDetails.value);
+    isAddingToCart.value = true;
+    setTimeout(() => {
+        isAddingToCart.value = false;
+    }, 3000);
 };
 </script>
