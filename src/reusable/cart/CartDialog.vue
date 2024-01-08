@@ -103,7 +103,7 @@
                                         </div>
                                         <div class="flex justify-between text-base font-medium text-gray-900">
                                             <p>Subtotal</p>
-                                            <p>EGP262.00</p>
+                                            <p>EGP{{ calculateSubtotal() }}</p>
                                         </div>
                                         <p class="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.
                                         </p>
@@ -164,4 +164,10 @@ const removeProduct = (productId) => {
     store.cart = updatedCart;
     sessionStorage.setItem("cart", JSON.stringify(updatedCart));
 };
+
+const calculateSubtotal = () => {
+    return store.cart.reduce((total, product) => {
+        return total + product.price * product.quantity;
+    }, 0).toFixed(2);
+}
 </script>

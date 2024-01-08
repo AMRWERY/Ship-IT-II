@@ -45,7 +45,7 @@ export const useCartersProductsStore = defineStore("carters-products", {
       if (existingProductIndex !== -1) {
         existingCartData[existingProductIndex].quantity += 1;
       } else {
-        existingCartData.push({ ...product, quantity: 1 });
+        existingCartData.push({ ...product, quantity: product.quantity });
       }
       sessionStorage.setItem("cart", JSON.stringify(existingCartData));
       this.cart = existingCartData;

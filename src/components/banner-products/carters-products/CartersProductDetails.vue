@@ -41,7 +41,7 @@
         </div>
 
         <div class="lg:w-4/5 mx-auto flex flex-wrap">
-            <img class="max-w-xl overflow-hidden rounded-lg h-[650px] xs:w-[400px] lg:w-[550px]" :src="selectedImg" />
+            <img class="max-w-xl overflow-hidden rounded-lg h-[550px] xs:w-[400px] lg:w-[550px]" :src="selectedImg" />
             <div class="mt-4 w-full lg:order-1 lg:w-32 lg:flex-shrink-0">
                 <div class="flex items-start">
                     <button type="button" @click="selectCard('imgFront')" v-if="productDetails?.imgFront != null"
@@ -159,7 +159,7 @@
                 <div class="flex items-center">
                     <label for="quantity"
                         class="mt-5 mr-4 text-xl font-semibold text-gray-700 dark:text-gray-400">Quantity</label>
-                    <div class="relative flex flex-row w-full h-10 mt-6 bg-transparent rounded-lg">
+                    <!-- <div class="relative flex flex-row w-full h-10 mt-6 bg-transparent rounded-lg">
                         <button type="button"
                             class="w-10 h-10 leading-10 text-gray-600 transition hover:opacity-75 hover:bg-red-400">
                             <span class="m-auto text-2xl  font-thin hover:text-white">-</span>
@@ -172,7 +172,22 @@
                             class="w-10 h-10 leading-10 text-gray-600 transition hover:opacity-75 hover:bg-blue-400">
                             <span class="m-auto text-2xl font-thin hover:text-white">+</span>
                         </button>
+                    </div> -->
+                    <div class="relative flex flex-row w-full h-10 mt-6 bg-transparent rounded-lg">
+                        <button type="button" @click="decrementQuantity"
+                            class="w-10 h-10 leading-10 text-gray-600 transition hover:opacity-75 hover:bg-red-400">
+                            <span class="m-auto text-2xl font-thin hover:text-white">-</span>
+                        </button>
+
+                        <input type="number" id="Quantity" :value="quantity" @input="updateQuantity"
+                            class="h-10 w-12 rounded border-gray-200 text-center [...]" />
+
+                        <button type="button" @click="incrementQuantity"
+                            class="w-10 h-10 leading-10 text-gray-600 transition hover:opacity-75 hover:bg-blue-400">
+                            <span class="m-auto text-2xl font-thin hover:text-white">+</span>
+                        </button>
                     </div>
+
                 </div>
 
                 <hr class="mt-4">
@@ -256,6 +271,7 @@ const productDetails = ref(null);
 const productId = ref('');
 const selectedImg = ref(null);
 const isAddingToCart = ref(false);
+const quantity = ref(1);
 
 onMounted(() => {
     productId.value = router.currentRoute.value.params.id;
@@ -274,10 +290,32 @@ const selectCard = (imgProperty) => {
 };
 
 const addToCart = () => {
-    store.addToCart(productDetails.value);
+    store.addToCart({ ...productDetails.value, quantity: quantity.value });
     isAddingToCart.value = true;
     setTimeout(() => {
         isAddingToCart.value = false;
     }, 3000);
 };
+
+const updateQuantity = (event) => {
+    const newQuantity = parseInt(event.target.value, 10);
+    quantity.value = isNaN(newQuantity) ? 1 : newQuantity;
+};
+
+const incrementQuantity = () => {
+    quantity.value += 1;
+};
+
+const decrementQuantity = () => {
+    if (quantity.value > 1) {
+        quantity.value -= 1;
+    }
+};
+// const addToCart = () => {
+//     store.addToCart(productDetails.value);
+//     isAddingToCart.value = true;
+//     setTimeout(() => {
+//         isAddingToCart.value = false;
+//     }, 3000);
+// };
 </script>
