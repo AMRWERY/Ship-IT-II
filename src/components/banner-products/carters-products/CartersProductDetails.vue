@@ -41,15 +41,15 @@
         </div>
 
         <div class="lg:w-4/5 mx-auto flex flex-wrap">
-            <img class="max-w-xl overflow-hidden rounded-lg h-[550px] xs:w-[400px] lg:w-[550px]" :src="selectedImg" />
-            <div class="mt-4 w-full lg:order-1 lg:w-32 lg:flex-shrink-0">
+            <img class="max-w-xl overflow-hidden rounded-lg h-[650px] xs:w-[400px] lg:w-[550px]" :src="selectedImg" />
+            <div class="mt-4 w-full lg:order-1 lg:w-96 lg:flex-shrink-0">
                 <div class="flex items-start">
                     <button type="button" @click="selectCard('imgFront')" v-if="productDetails?.imgFront != null"
-                        class="flex-0 aspect-square mb-3 h-20 overflow-hidden rounded-lg border-2 border-gray-900 text-center me-3 transit">
+                        class="flex-0 aspect-square mb-3 h-20 w-20 max-w-24 overflow-hidden rounded-lg border-2 border-gray-900 text-center me-3 transit">
                         <img class="h-full w-full object-cover" :src="productDetails?.productImg" />
                     </button>
                     <button type="button" @click="selectCard('imgBack')" v-if="productDetails?.imgBack != null"
-                        class="flex-0 aspect-square mb-3 h-20 overflow-hidden rounded-lg border-2 border-gray-900 text-center ms-2 transit">
+                        class="flex-0 aspect-square mb-3 h-20 w-20 max-w-24 overflow-hidden rounded-lg border-2 border-gray-900 text-center ms-2 transit">
                         <img class="h-full w-full object-cover" :src="productDetails?.imgBack" />
                     </button>
                 </div>
@@ -89,9 +89,11 @@
                 <div class="mb-4">
                     <p>Availability: <strong>{{ productDetails?.availability }}</strong></p>
                 </div>
-                <p class="leading-relaxed">
-                    {{ productDetails?.description }}
-                </p>
+                <div class="overflow-y-auto overflow-x-hidden max-h-14 desc">
+                    <p class="leading-relaxed">
+                        {{ productDetails?.description }}
+                    </p>
+                </div>
                 <div class="flex mt-6 items-center pb-5 border-gray-100 mb-5">
                     <div class="flex">
                         <div class="items-center" v-if="productDetails?.color != null">
@@ -311,11 +313,4 @@ const decrementQuantity = () => {
         quantity.value -= 1;
     }
 };
-// const addToCart = () => {
-//     store.addToCart(productDetails.value);
-//     isAddingToCart.value = true;
-//     setTimeout(() => {
-//         isAddingToCart.value = false;
-//     }, 3000);
-// };
 </script>

@@ -38,7 +38,7 @@
                 </div>
                 <div class="text-center mt-4">
                     <p class="text-lg font-semibold text-gray-800">Hello, {{ store.getUsername }}</p>
-                    <router-link class="text-md font-medium text-gray-600" to="/" @click="logout">Log out</router-link>
+                    <router-link class="text-md font-medium text-gray-600" to="" @click="logout">Log out</router-link>
                 </div>
             </div>
             <hr class="mt-6 border-gray-300" />
@@ -100,6 +100,7 @@ onMounted(() => {
 const logout = () => {
     try {
         store.logout();
+        location.reload()
     } catch (error) {
         console.log(error);
     }

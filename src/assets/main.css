@@ -17,3 +17,16 @@
       @apply rounded-lg border border-gray-300 shadow-sm bg-slate-200 text-black py-1.5;
     } */
 }
+
+.desc::-webkit-scrollbar {
+  width: 6px;
+}
+
+.desc::-webkit-scrollbar-thumb {
+  background-color: #c1c1c1;
+  border-radius: 6px;
+}
+
+.desc::-webkit-scrollbar-track {
+  background-color: #eee;
+}

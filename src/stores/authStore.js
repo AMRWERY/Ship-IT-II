@@ -118,7 +118,7 @@ export const useAuthStore = defineStore("auth", {
       signOut(auth)
         .then(() => {
           sessionStorage.clear();
-          router.replace("/sign-up");
+          // router.replace("/sign-up");
         })
         .catch((error) => {
           console.log(error);
