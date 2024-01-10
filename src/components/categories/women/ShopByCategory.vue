@@ -30,7 +30,7 @@
             <div class="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-1 lg:grid-cols-2 xl:gap-x-8">
                 <div v-for="card in cards" :key="card" class="group relative">
                     <div
-                        class="block max-w-[18rem] xs:min-w-full rounded-lg bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700">
+                        class="block max-w-96 xs:min-w-full rounded-lg bg-white shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700">
                         <div class="p-6 text-center">
                             <p class="truncate mb-2">{{ card.title }}</p>
                             <p class="text-base text-neutral-600 dark:text-neutral-200">

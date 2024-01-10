@@ -1,8 +1,10 @@
 <template>
     <Navbar />
-    <div class="flex-col min-h-screen mx-auto max-w-full xs:mx-3">
-        <RouterView />
-    </div>
+    <main>
+        <div class="flex-col min-h-screen mx-auto max-w-full xs:mx-3">
+            <RouterView />
+        </div>
+    </main>
     <Footer />
 </template>
 

@@ -1,96 +1,83 @@
 <template>
-    <!-- Main navigation container -->
-    <nav class="relative flex w-full flex-wrap items-center justify-between bg-[#FBFBFB] py-2 text-neutral-500 shadow-lg hover:text-neutral-700 focus:text-neutral-700 dark:bg-neutral-600 lg:py-4"
-        data-te-navbar-ref>
-        <div class="flex w-full flex-wrap items-center justify-between px-3">
-            <div>
-                <div class="flex font-bold text-lg gap-2 items-center">
-                    <router-link to="/">
-                        <img src="/shopping-bags-svgrepo-com.svg" width="52" height="52">
-                    </router-link>
+    <Disclosure as="nav" class="bg-gray-800" v-slot="{ open }">
+        <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+            <div class="relative flex h-16 items-center justify-between">
+                <div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
+                    <!-- Mobile menu button-->
+                    <DisclosureButton class="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400">
+                        <span class="absolute -inset-0.5" />
+                        <span class="sr-only">Open main menu</span>
+                        <i class="fa-solid fa-bars fa-xl block" aria-hidden="true" v-if="!open"></i>
+                        <i class="fa-solid fa-bars-staggered fa-xl block" aria-hidden="true" v-else></i>
+                    </DisclosureButton>
                 </div>
-            </div>
-
-            <!-- Hamburger button for mobile view -->
-            <button
-                class="block border-0 bg-transparent px-2 text-neutral-500 hover:no-underline hover:shadow-none focus:no-underline focus:shadow-none focus:outline-none focus:ring-0 dark:text-neutral-200 lg:hidden"
-                type="button" data-te-collapse-init data-te-target="#navbarSupportedContent4"
-                aria-controls="navbarSupportedContent4" aria-expanded="false" aria-label="Toggle navigation">
-                <!-- Hamburger icon -->
-                <span class="[&>svg]:w-7">
-                    <i class="fa-solid fa-bars fa-lg h-auto w-7"></i>
-                </span>
-            </button>
-
-            <!-- Collapsible navbar container -->
-            <div class="!visible mt-2 hidden flex-grow basis-[100%] items-center lg:mt-0 lg:!flex lg:basis-auto"
-                id="navbarSupportedContent4" data-te-collapse-item>
-                <!-- Left links -->
-                <ul class="list-style-none mr-auto flex flex-col pl-0 lg:mt-1 lg:flex-row" data-te-navbar-nav-ref>
-                    <!-- Home link -->
-                    <li class="my-4 pl-2 lg:my-0 lg:pl-2 lg:pr-1" data-te-nav-item-ref>
-                        <router-link
-                            class="text-neutral-500 hover:text-neutral-700 focus:text-neutral-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-400 dark:focus:text-neutral-400 lg:px-2 [&.active]:text-black/90 dark:[&.active]:text-neutral-400"
-                            aria-current="page" to="/" data-te-nav-link-ref>Home</router-link>
-                    </li>
-                    <li class="my-4 pl-2 lg:my-0 lg:pl-2 lg:pr-1" data-te-nav-item-ref>
-                        <router-link
-                            class="text-neutral-500 hover:text-neutral-700 focus:text-neutral-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-400 dark:focus:text-neutral-400 lg:px-2 [&.active]:text-black/90 dark:[&.active]:text-neutral-400"
-                            aria-current="page" to="/woo" data-te-nav-link-ref>Woo Products</router-link>
-                    </li>
-                    <li class="my-4 pl-2 lg:my-0 lg:pl-2 lg:pr-1" data-te-nav-item-ref>
-                        <router-link
-                            class="text-neutral-500 hover:text-neutral-700 focus:text-neutral-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-400 dark:focus:text-neutral-400 lg:px-2 [&.active]:text-black/90 dark:[&.active]:text-neutral-400"
-                            aria-current="page" to="/categories" data-te-nav-link-ref>Categories</router-link>
-                    </li>
-                    <li class="my-4 pl-2 lg:my-0 lg:pl-2 lg:pr-1" data-te-nav-item-ref>
-                        <router-link
-                            class="text-neutral-500 hover:text-neutral-700 focus:text-neutral-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-400 dark:focus:text-neutral-400 lg:px-2 [&.active]:text-black/90 dark:[&.active]:text-neutral-400"
-                            aria-current="page" to="/blog" data-te-nav-link-ref>Blogs</router-link>
-                    </li>
-                    <li class="my-4 pl-2 lg:my-0 lg:pl-2 lg:pr-1" data-te-nav-item-ref>
-                        <router-link
-                            class="text-neutral-500 hover:text-neutral-700 focus:text-neutral-700 disabled:text-black/30 dark:text-neutral-200 dark:hover:text-neutral-400 dark:focus:text-neutral-400 lg:px-2 [&.active]:text-black/90 dark:[&.active]:text-neutral-400"
-                            aria-current="page" to="/contact-us" data-te-nav-link-ref>Contact</router-link>
-                    </li>
-                </ul>
-
-                <div class="flex items-center space-x-5">
-                    <router-link type="button" class="rounded-full p-1 text-gray-400 dark:text-white"
-                        data-te-toggle="tooltip" title="Profile" to="/profile">
-                        <i class="fa-solid fa-user fa-xl me-1 ms-1"></i>
+                <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+                    <div class="hidden sm:ml-6 sm:block">
+                        <div class="flex space-x-4">
+                            <router-link v-for="item in navigation" :key="item.name" :to="item.route"
+                                :class="[item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'rounded-md px-3 py-2 text-sm font-medium']"
+                                :aria-current="item.current ? 'page' : undefined">{{ item.name }}</router-link>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0 space-x-3">
+                    <router-link type="button" to="/profile"
+                        class="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white">
+                        <span class="absolute -inset-1.5" />
+                        <span class="sr-only">View Profile</span>
+                        <i class="fa-solid fa-user fa-xl" aria-hidden="true"></i>
                     </router-link>
-                    <button type="button" class="rounded-full p-1 text-gray-400 dark:text-white" data-te-toggle="tooltip"
-                        title="Change language" to="/profile">
-                        <i class="fa-solid fa-earth-africa fa-xl me-1 ms-1"></i>
-                    </button>
 
                     <CartDialog />
 
+                    <button type="button" class="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white">
+                        <span class="absolute -inset-1.5" />
+                        <span class="sr-only">View Profile</span>
+                        <i class="fa-solid fa-earth-africa fa-xl" aria-hidden="true"></i>
+                    </button>
+
                     <Login />
 
-                    <button type="button" class="rounded-full p-1 text-gray-400 dark:text-white" data-te-toggle="tooltip"
-                        title="Logout" @click="logout">
-                        <i class="fa-solid fa-right-from-bracket fa-xl me-1 ms-1"></i>
+                    <button type="button" @click="logout"
+                        class="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white">
+                        <span class="absolute -inset-1.5" />
+                        <span class="sr-only">View Profile</span>
+                        <i class="fa-solid fa-right-from-bracket fa-xl" aria-hidden="true"></i>
                     </button>
                 </div>
             </div>
         </div>
-    </nav>
+
+        <DisclosurePanel class="sm:hidden">
+            <div class="space-y-1 px-2 pb-3 pt-2">
+                <router-link v-for="item in navigation" :key="item.name" :to="item.route"
+                    :class="[item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white', 'block rounded-md px-3 py-2 text-base font-medium']"
+                    :aria-current="item.current ? 'page' : undefined" active-class="bg-gray-900 text-white">
+                    {{ item.name }}
+                </router-link>
+            </div>
+
+        </DisclosurePanel>
+    </Disclosure>
 </template>
 
 <script setup>
-import { onMounted } from "vue";
+import { reactive } from "vue";
 import { useAuthStore } from '@/stores/authStore'
-import { Collapse, Dropdown, initTE } from "tw-elements";
-import Login from '../../auth/Login.vue';
+import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/vue'
+import Login from '@/auth/Login.vue';
 import CartDialog from '@/reusable/cart/CartDialog.vue'
 
 const store = useAuthStore()
 
-onMounted(() => {
-    initTE({ Collapse, Dropdown });
-})
+const navigation = reactive([
+    { name: 'Home', route: '/', current: true },
+    { name: 'Woo Products', route: '/woo', current: false },
+    { name: 'Categories', route: '/categories', current: false },
+    { name: 'Blogs', route: '/blog', current: false },
+    { name: 'Contact', route: '/contact-us', current: false },
+])
 
 const logout = () => {
     try {
