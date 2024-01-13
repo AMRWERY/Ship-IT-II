@@ -7,7 +7,6 @@ export const useCartersProductsStore = defineStore("carters-products", {
     return {
       products: [],
       selectedProduct: null,
-      cart: [],
     };
   },
 
@@ -35,26 +34,6 @@ export const useCartersProductsStore = defineStore("carters-products", {
         // console.log(product);
         this.selectedProduct = product;
       }
-    },
-
-    addToCart(product) {
-      const existingCartData = JSON.parse(sessionStorage.getItem("cart")) || [];
-      const existingProductIndex = existingCartData.findIndex(
-        (item) => item.id === product.id
-      );
-      if (existingProductIndex !== -1) {
-        existingCartData[existingProductIndex].quantity += 1;
-      } else {
-        existingCartData.push({ ...product, quantity: product.quantity });
-      }
-      sessionStorage.setItem("cart", JSON.stringify(existingCartData));
-      this.cart = existingCartData;
-    },
-
-    getCart() {
-      const cartData = JSON.parse(sessionStorage.getItem("cart")) || [];
-      // console.log("Cart data:", cartData);
-      return cartData;
     },
   },
 

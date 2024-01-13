@@ -264,10 +264,12 @@
 import { ref, onMounted, watch } from "vue";
 import { useRouter } from 'vue-router';
 import { useCartersProductsStore } from '@/stores/banner-products/cartersProductsStore'
+import { useCartStore } from '@/stores/cartStore'
 import RelatedProducts from './RelatedProducts.vue'
 import Rating from "@/reusable/Rating.vue";
 
 const store = useCartersProductsStore()
+const cartStore = useCartStore()
 const router = useRouter()
 const productDetails = ref(null);
 const productId = ref('');
@@ -292,7 +294,7 @@ const selectCard = (imgProperty) => {
 };
 
 const addToCart = () => {
-    store.addToCart({ ...productDetails.value, quantity: quantity.value });
+    cartStore.addToCart({ ...productDetails.value, quantity: quantity.value });
     isAddingToCart.value = true;
     setTimeout(() => {
         isAddingToCart.value = false;

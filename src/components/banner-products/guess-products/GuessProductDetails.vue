@@ -161,18 +161,35 @@
                 <div class="flex items-center">
                     <label for="quantity"
                         class="mt-5 mr-4 text-xl font-semibold text-gray-700 dark:text-gray-400">Quantity</label>
-                    <div class="relative flex flex-row w-full h-10 mt-6 bg-transparent rounded-lg">
-                        <button
-                            class="w-7 h-full text-white bg-red-500 rounded-l outline-none cursor-pointer dark:hover:bg-red-700 hover:text-white  hover:bg-red-600">
-                            <span class="m-auto text-2xl  font-thin">-</span>
+                    <!-- <div class="relative flex flex-row w-full h-10 mt-6 bg-transparent rounded-lg">
+                        <button type="button"
+                            class="w-10 h-10 leading-10 text-gray-600 transition hover:opacity-75 hover:bg-red-400">
+                            <span class="m-auto text-2xl  font-thin hover:text-white">-</span>
                         </button>
-                        <input type="number" class="h-10 w-14 rounded border-gray-200 text-center sm:text-sm"
-                            placeholder="1" />
-                        <button
-                            class="w-7 h-full text-white bg-blue-500 rounded-r outline-none cursor-pointer dark:hover:bg-blue-700 hover:text-white hover:bg-blue-700">
-                            <span class="m-auto text-2xl font-thin">+</span>
+
+                        <input type="number" id="Quantity" value="1"
+                            class="h-10 w-12 rounded border-gray-200 text-center [-moz-appearance:_textfield] sm:text-sm [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none" />
+
+                        <button type="button"
+                            class="w-10 h-10 leading-10 text-gray-600 transition hover:opacity-75 hover:bg-blue-400">
+                            <span class="m-auto text-2xl font-thin hover:text-white">+</span>
+                        </button>
+                    </div> -->
+                    <div class="relative flex flex-row w-full h-10 mt-6 bg-transparent rounded-lg">
+                        <button type="button" @click="decrementQuantity"
+                            class="w-10 h-10 leading-10 text-gray-600 transition hover:opacity-75 hover:bg-red-400">
+                            <span class="m-auto text-2xl font-thin hover:text-white">-</span>
+                        </button>
+
+                        <input type="number" id="Quantity" :value="quantity" @input="updateQuantity"
+                            class="h-10 w-12 rounded border-gray-200 text-center [...]" />
+
+                        <button type="button" @click="incrementQuantity"
+                            class="w-10 h-10 leading-10 text-gray-600 transition hover:opacity-75 hover:bg-blue-400">
+                            <span class="m-auto text-2xl font-thin hover:text-white">+</span>
                         </button>
                     </div>
+
                 </div>
 
                 <hr class="mt-4">
@@ -181,10 +198,15 @@
                     <span class="font-medium text-md mt-1 ml-1 line-through text-gray-500"
                         v-if="productDetails?.originalPrice">EGP{{ productDetails?.originalPrice
                         }}</span>
-                    <button type="button"
-                        class="ml-auto inline-flex items-center justify-center text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded transition-all duration-200 ease-in-out focus:shadow">
-                        <i class="fa-solid fa-basket-shopping shrink-0 mr-3 h-5 w-5"></i>
-                        Buy Now
+                    <button @click="addToCart" :class="{
+                            'bg-red-500 hover:bg-red-600': isAddingToCart,
+                            'bg-indigo-500 hover:bg-indigo-600': !isAddingToCart,
+                        }"
+                        class="ml-auto inline-flex items-center justify-center text-white border-0 py-2 px-6 focus:outline-none rounded transition-all duration-200 ease-in-out focus:shadow"
+                        :disabled="isAddingToCart">
+                        <i v-if="isAddingToCart" class="fa-solid fa-spinner animate-spin mr-3 h-5 w-5"></i>
+                        <i v-else class="fa-solid fa-basket-shopping mr-3 h-5 w-5"></i>
+                        {{ isAddingToCart ? 'Adding...' : 'Buy Now' }}
                     </button>
                 </div>
             </div>
@@ -241,14 +263,18 @@
 import { ref, onMounted, watch } from "vue";
 import { useRouter } from 'vue-router';
 import { useGuessProductsStore } from '@/stores/banner-products/guessProductsStore'
+import { useCartStore } from '@/stores/cartStore'
 import RelatedProducts from "./RelatedProducts.vue";
 import Rating from "@/reusable/Rating.vue";
 
 const store = useGuessProductsStore()
+const cartStore = useCartStore()
 const router = useRouter()
 const productDetails = ref(null);
 const productId = ref('');
 const selectedImg = ref(null);
+const isAddingToCart = ref(false);
+const quantity = ref(1);
 
 onMounted(() => {
     productId.value = router.currentRoute.value.params.id;
@@ -264,5 +290,28 @@ watch(() => store.selectedProduct, (newProduct) => {
 
 const selectCard = (imgProperty) => {
     selectedImg.value = productDetails.value[imgProperty];
+};
+
+const addToCart = () => {
+    cartStore.addToCart({ ...productDetails.value, quantity: quantity.value });
+    isAddingToCart.value = true;
+    setTimeout(() => {
+        isAddingToCart.value = false;
+    }, 3000);
+};
+
+const updateQuantity = (event) => {
+    const newQuantity = parseInt(event.target.value, 10);
+    quantity.value = isNaN(newQuantity) ? 1 : newQuantity;
+};
+
+const incrementQuantity = () => {
+    quantity.value += 1;
+};
+
+const decrementQuantity = () => {
+    if (quantity.value > 1) {
+        quantity.value -= 1;
+    }
 };
 </script>

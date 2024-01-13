@@ -20,7 +20,16 @@
                         <i class="fa-solid fa-house fa-xl text-gray-400 mr-1 md:mr-0" width="20px" height="20px"></i>
                     </router-link>
 
-                    <CartDialog />
+                    <div class="relative">
+                        <span
+                            class="absolute top-0 end-2 -mt-2 -mr-2 inline-flex items-center justify-center rounded-full bg-red-500 h-4 w-4 text-white text-xs">
+                            {{ cartStore.cart.length }}
+                        </span>
+                        <router-link type="button" class="rounded-full p-1 text-gray-400 dark:text-white"
+                            data-te-toggle="tooltip" title="Cart" to="/cart">
+                            <i class="fa-solid fa-cart-shopping fa-xl me-2 ms-2"></i>
+                        </router-link>
+                    </div>
 
                 </div>
             </div>
@@ -80,15 +89,20 @@
 <script setup>
 import { onMounted } from 'vue'
 import { useAuthStore } from '@/stores/authStore'
+import { useCartStore } from '@/stores/cartStore'
 import { RouterView } from 'vue-router'
 import { initDrawers } from 'flowbite'
-import CartDialog from '../reusable/cart/CartDialog.vue'
 
 onMounted(() => {
     initDrawers();
 })
 
 const store = useAuthStore()
+const cartStore = useCartStore()
+
+onMounted(() => {
+    cartStore.cart = cartStore.getCart();
+});
 
 onMounted(() => {
     const username = sessionStorage.getItem('username');

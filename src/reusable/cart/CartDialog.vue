@@ -2,7 +2,7 @@
     <div class="relative">
         <span
             class="absolute top-0 end-2 -mt-2 -mr-2 inline-flex items-center justify-center rounded-full bg-red-500 h-4 w-4 text-white text-xs">
-            {{ store.cart.length }}
+            {{ cartStore.cart.length }}
         </span>
         <button type="button" class="rounded-full p-1 text-gray-400 dark:text-white" data-te-toggle="tooltip" title="Cart"
             @click="open = !open">
@@ -41,13 +41,14 @@
                                             </div>
                                         </div>
 
-                                        <div class="mt-8 flex items-center justify-center" v-if="store.cart.length === 0">
+                                        <div class="mt-8 flex items-center justify-center"
+                                            v-if="cartStore.cart.length === 0">
                                             <p class="text-center text-gray-500 text-xl">Your cart is empty</p>
                                         </div>
                                         <div class="mt-8" v-else>
                                             <div class="flow-root">
                                                 <ul role="list" class="-my-6 divide-y divide-gray-200">
-                                                    <li v-for="product in store.cart" :key="product" class="flex py-6">
+                                                    <li v-for="product in cartStore.cart" :key="product" class="flex py-6">
                                                         <div
                                                             class="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                                             <img :src="product.productImg"
@@ -82,7 +83,8 @@
                                         </div>
                                     </div>
 
-                                    <div class="border-t border-gray-200 px-4 py-6 sm:px-6" v-if="store.cart.length > 0">
+                                    <div class="border-t border-gray-200 px-4 py-6 sm:px-6"
+                                        v-if="cartStore.cart.length > 0">
                                         <!-- Coupon -->
                                         <div>
                                             <form class="space-y-6">
@@ -114,23 +116,21 @@
                                         <div class="mt-6 flex justify-center text-center text-sm text-gray-500">
                                             <p>
                                                 or
-                                                <button type="button"
+                                                <router-link type="button" to="/woo"
                                                     class="font-medium text-indigo-600 hover:text-indigo-500"
                                                     @click="open = false">
                                                     Continue Shopping
                                                     <span aria-hidden="true"> &rarr;</span>
-                                                </button>
+                                                </router-link>
                                             </p>
                                         </div>
                                     </div>
                                     <div class="mb-6 flex justify-center text-center text-sm text-gray-500" v-else>
-
                                         <router-link to="/checkout" type="button"
                                             class="font-medium text-indigo-600 hover:text-indigo-500" @click="open = false">
                                             Start Shopping
                                             <span aria-hidden="true"> &rarr;</span>
                                         </router-link>
-
                                     </div>
                                 </div>
                             </DialogPanel>
@@ -145,28 +145,28 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from '@headlessui/vue'
-import { useCartersProductsStore } from '@/stores/banner-products/cartersProductsStore'
+import { useCartStore } from '@/stores/cartStore'
 
-const store = useCartersProductsStore()
+const cartStore = useCartStore()
+const open = ref(false)
 
 onMounted(() => {
-    store.cart = store.getCart();
+    cartStore.cart = cartStore.getCart();
 });
 
 const totalQuantity = computed(() => {
-    return store.cart.reduce((total, product) => total + product.quantity, 0)
+    return cartStore.cart.reduce((total, product) => total + product.quantity, 0)
 })
 
-const open = ref(false)
 
 const removeProduct = (productId) => {
-    const updatedCart = store.cart.filter(product => product.id !== productId);
-    store.cart = updatedCart;
+    const updatedCart = cartStore.cart.filter(product => product.id !== productId);
+    cartStore.cart = updatedCart;
     sessionStorage.setItem("cart", JSON.stringify(updatedCart));
 };
 
 const calculateSubtotal = () => {
-    return store.cart.reduce((total, product) => {
+    return cartStore.cart.reduce((total, product) => {
         return total + product.price * product.quantity;
     }, 0).toFixed(2);
 }
