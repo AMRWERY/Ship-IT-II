@@ -17,7 +17,8 @@
             </form>
 
             <div class="mt-6 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-                <div v-for="product in store.products" :key="product"
+                <div v-for="product in store.filteredProducts.length > 0 ? store.filteredProducts : store.products"
+                    :key="product.id"
                     class="relative m-5 w-full max-w-xs overflow-hidden rounded-lg bg-white shadow-md card-transit">
                     <router-link :to="'/carters-product/' + product.id">
                         <div>
@@ -64,6 +65,8 @@ import Pagination from "@/reusable/Pagination.vue";
 import Rating from "@/reusable/Rating.vue";
 
 const store = useCartersProductsStore()
+
+const props = defineProps(['filteredProducts']);
 
 onMounted(() => {
     store.fetchProducts()

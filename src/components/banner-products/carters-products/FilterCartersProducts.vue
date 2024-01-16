@@ -135,18 +135,18 @@
                                 </h3>
                                 <DisclosurePanel class="pt-6">
                                     <div class="space-y-4">
-                                        <form class="relative space-x-1 flex items-center">
+                                        <form class="relative space-x-1 flex items-center" @submit.prevent="filterProducts">
                                             <div>
-                                                <div class="mt-1 relative rounded-md shadow-sm"><input id="minPrice"
-                                                        name="minPrice"
+                                                <div class="mt-1 relative rounded-md shadow-sm">
+                                                    <input id="minPrice" name="minPrice" v-model="minPrice"
                                                         class="appearance-none block w-full border shadow-sm focus:outline-none sm:text-sm py-2 rounded-md border-gray-300 placeholder-gray-400 focus:ring-indigo-500 focus:border-indigo-500 px-2 flex-1 h-9"
                                                         type="number" step="100" placeholder="min">
                                                 </div>
                                             </div>
                                             <span class="text-gray-600">To</span>
                                             <div>
-                                                <div class="mt-1 relative rounded-md shadow-sm"><input id="maxPrice"
-                                                        name="maxPrice"
+                                                <div class="mt-1 relative rounded-md shadow-sm">
+                                                    <input id="maxPrice" name="maxPrice" v-model="maxPrice"
                                                         class="appearance-none block w-full border shadow-sm focus:outline-none sm:text-sm  py-2 rounded-md border-gray-300 placeholder-gray-400 focus:ring-indigo-500 focus:border-indigo-500 px-2 flex-1 h-9"
                                                         step="100" type="number" placeholder="max">
                                                 </div>
@@ -188,8 +188,8 @@
 
                         <!-- Product grid -->
                         <div class="lg:col-span-4">
-                            <!-- Your content -->
-                            <CartersProducts />
+                            <!-- <CartersProducts /> -->
+                            <CartersProducts :filteredProducts="filterProducts" />
                         </div>
                     </div>
                 </section>
@@ -202,6 +202,15 @@
 import { ref } from 'vue'
 import { Dialog, DialogPanel, Disclosure, DisclosureButton, DisclosurePanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import CartersProducts from './CartersProducts.vue';
+import { useCartersProductsStore } from '@/stores/banner-products/cartersProductsStore'
+
+const minPrice = ref('');
+const maxPrice = ref('');
+const store = useCartersProductsStore()
+
+const filterProducts = () => {
+    store.filterProducts(minPrice.value, maxPrice.value);
+};
 
 const filters = [
     {

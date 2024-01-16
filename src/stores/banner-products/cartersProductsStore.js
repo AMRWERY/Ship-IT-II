@@ -7,6 +7,7 @@ export const useCartersProductsStore = defineStore("carters-products", {
     return {
       products: [],
       selectedProduct: null,
+      filteredProducts: [],
     };
   },
 
@@ -35,9 +36,24 @@ export const useCartersProductsStore = defineStore("carters-products", {
         this.selectedProduct = product;
       }
     },
+
+    filterProducts(minPrice, maxPrice) {
+      if (!minPrice && !maxPrice) {
+        this.filteredProducts = [];
+      } else {
+        this.filteredProducts = this.products.filter((product) => {
+          return (
+            (!minPrice || product.price >= minPrice) &&
+            (!maxPrice || product.price <= maxPrice)
+          );
+        });
+      }
+      // console.log("Filtered products in store:", this.filteredProducts);
+    },
   },
 
   getters: {
     getProductDetails: (state) => state.products,
+    getFilteredProducts: (state) => state.filteredProducts,
   },
 });

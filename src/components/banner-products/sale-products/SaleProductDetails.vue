@@ -294,6 +294,7 @@ const selectCard = (imgProperty) => {
 
 const addToCart = () => {
     cartStore.addToCart({ ...productDetails.value, quantity: quantity.value });
+    console.log(productDetails.value)
     isAddingToCart.value = true;
     setTimeout(() => {
         isAddingToCart.value = false;
