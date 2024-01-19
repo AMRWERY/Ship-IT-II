@@ -26,6 +26,7 @@ export const useCartersProductsStore = defineStore("carters-products", {
         // console.log(products);
       });
       this.products = products;
+      this.filteredProducts = products;
     },
 
     async getProductById(id) {
@@ -37,18 +38,41 @@ export const useCartersProductsStore = defineStore("carters-products", {
       }
     },
 
-    filterProducts(minPrice, maxPrice) {
+    filterProductsByPrice(minPrice, maxPrice) {
       if (!minPrice && !maxPrice) {
-        this.filteredProducts = [];
+        this.filteredProducts = this.products;
       } else {
         this.filteredProducts = this.products.filter((product) => {
-          return (
+          const price =
             (!minPrice || product.price >= minPrice) &&
-            (!maxPrice || product.price <= maxPrice)
-          );
+            (!maxPrice || product.price <= maxPrice);
+
+          return price;
         });
       }
       // console.log("Filtered products in store:", this.filteredProducts);
+    },
+
+    filterProductsByCategory(selectedCategories) {
+      if (!selectedCategories.length) {
+        this.filteredProducts = this.products;
+      } else {
+        this.filteredProducts = this.products.filter((product) => {
+          for (const selectedCategory of selectedCategories) {
+            if (product.category === selectedCategory) {
+              return product;
+            }
+            return false;
+          }
+        });
+      }
+      // console.log("Filtered products in store:", this.filteredProducts);
+    },
+
+    searchProducts(query) {
+      this.filteredProducts = this.products.filter((product) =>
+        product.title.toLowerCase().includes(query.toLowerCase())
+      );
     },
   },
 

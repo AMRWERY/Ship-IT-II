@@ -32,7 +32,7 @@
                                         <h3 class="-my-3 flow-root">
                                             <DisclosureButton
                                                 class="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
-                                                <span class="font-medium text-gray-900">Price (USD)</span>
+                                                <span class="font-medium text-gray-900">Price (EGP)</span>
                                                 <span class="ml-6 flex items-center">
                                                     <i class="fa-solid fa-plus h-5 w-5" aria-hidden="true" v-if="!open"></i>
                                                     <i class="fa-solid fa-minus h-5 w-5" aria-hidden="true" v-else></i>
@@ -126,7 +126,7 @@
                                 <h3 class="-my-3 flow-root">
                                     <DisclosureButton
                                         class="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
-                                        <span class="font-medium text-gray-900">Price (USD)</span>
+                                        <span class="font-medium text-gray-900">Price (EGP)</span>
                                         <span class="ml-6 flex items-center">
                                             <i class="fa-solid fa-plus h-5 w-5" aria-hidden="true" v-if="!open"></i>
                                             <i class="fa-solid fa-minus h-5 w-5" aria-hidden="true" v-else></i>
@@ -159,12 +159,11 @@
                                 </DisclosurePanel>
                             </Disclosure>
 
-                            <Disclosure as="div" v-for="section in filters" :key="section.id"
-                                class="border-b border-gray-200 py-6" v-slot="{ open }">
+                            <Disclosure as="div" class="border-b border-gray-200 py-6" v-slot="{ open }">
                                 <h3 class="-my-3 flow-root">
                                     <DisclosureButton
                                         class="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
-                                        <span class="font-medium text-gray-900">{{ section.name }}</span>
+                                        <span class="font-medium text-gray-900">Categories</span>
                                         <span class="ml-6 flex items-center">
                                             <i class="fa-solid fa-plus h-5 w-5" aria-hidden="true" v-if="!open"></i>
                                             <i class="fa-solid fa-minus h-5 w-5" aria-hidden="true" v-else></i>
@@ -173,13 +172,13 @@
                                 </h3>
                                 <DisclosurePanel class="pt-6">
                                     <div class="space-y-4">
-                                        <div v-for="(option, optionIdx) in section.options" :key="option.value"
-                                            class="flex items-center">
-                                            <input :id="`filter-${section.id}-${optionIdx}`" :name="`${section.id}[]`"
-                                                :value="option.value" type="checkbox" :checked="option.checked"
-                                                class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                                            <label :for="`filter-${section.id}-${optionIdx}`"
-                                                class="ml-3 text-sm text-gray-600">{{ option.label }}</label>
+                                        <div v-for="category in categories" :key="category.value" class="flex items-center">
+                                            <input id="category" name="category" :value="category.label" type="checkbox"
+                                                :checked="category.checked"
+                                                class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                                @change="category.checked = !category.checked; updateSelectedCategories(category.label, category.checked)" />
+                                            <label for="category" class="ml-3 text-sm text-gray-600">{{ category.label
+                                            }}</label>
                                         </div>
                                     </div>
                                 </DisclosurePanel>
@@ -188,7 +187,6 @@
 
                         <!-- Product grid -->
                         <div class="lg:col-span-4">
-                            <!-- <CartersProducts /> -->
                             <CartersProducts :filteredProducts="filterProducts" />
                         </div>
                     </div>
@@ -199,7 +197,7 @@
 </template>
   
 <script setup>
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 import { Dialog, DialogPanel, Disclosure, DisclosureButton, DisclosurePanel, TransitionChild, TransitionRoot } from '@headlessui/vue'
 import CartersProducts from './CartersProducts.vue';
 import { useCartersProductsStore } from '@/stores/banner-products/cartersProductsStore'
@@ -207,70 +205,64 @@ import { useCartersProductsStore } from '@/stores/banner-products/cartersProduct
 const minPrice = ref('');
 const maxPrice = ref('');
 const store = useCartersProductsStore()
+const selectedCategories = ref([]);
 
-const filterProducts = () => {
-    store.filterProducts(minPrice.value, maxPrice.value);
+const updateSelectedCategories = (categoryId, checked) => {
+    if (checked) {
+        selectedCategories.value.push(categoryId);
+    } else {
+        selectedCategories.value = selectedCategories.value.filter((id) => id !== categoryId);
+    }
+    store.filterProductsByCategory(selectedCategories.value);
+    // console.log(updateSelectedCategories)
 };
 
-const filters = [
-    {
-        id: 'fulfillment',
-        name: 'Fulfillment',
-        options: [
-            { value: 'express deals', label: 'Express Deals', checked: false },
-            { value: 'global deals', label: 'Global Deals', checked: false },
-        ],
-    },
-    {
-        id: 'categories',
-        name: 'Categories',
-        options: [
-            { value: 'women', label: 'Women', checked: false },
-            { value: 'men', label: 'Men', checked: false },
-            { value: 'kids', label: 'Juniors & Kids', checked: true },
-            { value: 'electronics', label: 'Electronics', checked: false },
-            { value: 'beauty', label: 'Beauty', checked: false },
-        ],
-    },
-    {
-        id: 'colors',
-        name: 'Colors',
-        options: [
-            { value: 'yellow', label: 'Yellow', checked: false },
-            { value: 'white', label: 'White', checked: false },
-            { value: 'turquoise', label: 'Turquoise', checked: false },
-            { value: 'silver', label: 'Silver', checked: false },
-            { value: 'red', label: 'Red', checked: false },
-            { value: 'purple', label: 'Purple', checked: true },
-            { value: 'pink', label: 'Pink', checked: false },
-            { value: 'orange', label: 'Orange', checked: false },
-            { value: 'off-white', label: 'Off-White', checked: false },
-            { value: 'grey', label: 'Grey', checked: false },
-            { value: 'green', label: 'Green', checked: false },
-            { value: 'gold', label: 'Gold', checked: false },
-            { value: 'blue', label: 'Blue', checked: false },
-            { value: 'black', label: 'Black', checked: false },
-        ],
-    },
-    {
-        id: 'brands',
-        name: 'Brands',
-        options: [
-            { value: 'zulu', label: 'Zulu', checked: false },
-            { value: 'zara', label: 'Zara', checked: false },
-            { value: 'yellow box', label: 'Yellow Box', checked: true },
-            { value: 'timberland', label: 'Timberland', checked: false },
-            { value: 'sugar', label: 'Sugar', checked: false },
-            { value: 'sega', label: 'Sega', checked: false },
-            { value: 'razer', label: 'Razer', checked: false },
-            { value: 'puma', label: 'Puma', checked: false },
-            { value: 'paris', label: 'PARIS', checked: false },
-            { value: 'nixon', label: 'Nixon', checked: false },
-            { value: 'nike', label: 'Nike', checked: false },
-            { value: 'lacoste', label: 'Lacoste', checked: false },
-        ],
-    },
-]
+const filterProducts = () => {
+    store.filterProductsByPrice(minPrice.value, maxPrice.value);
+};
 
+const fulfillment = ref([
+    { value: "carter's", label: "Carter's", checked: true },
+])
+
+const categories = reactive([
+    { value: 'women', label: 'Women', checked: false },
+    { value: 'men', label: 'Men', checked: false },
+    { value: 'kids', label: 'Juniors & Kids', checked: false },
+    { value: 'electronics', label: 'Electronics', checked: false },
+    { value: 'beauty', label: 'Beauty', checked: false },
+])
+
+const colors = reactive([
+    { value: 'yellow', label: 'Yellow', checked: false },
+    { value: 'white', label: 'White', checked: false },
+    { value: 'turquoise', label: 'Turquoise', checked: false },
+    { value: 'silver', label: 'Silver', checked: false },
+    { value: 'red', label: 'Red', checked: false },
+    { value: 'purple', label: 'Purple', checked: false },
+    { value: 'pink', label: 'Pink', checked: false },
+    { value: 'orange', label: 'Orange', checked: false },
+    { value: 'off-white', label: 'Off-White', checked: false },
+    { value: 'grey', label: 'Grey', checked: false },
+    { value: 'green', label: 'Green', checked: false },
+    { value: 'gold', label: 'Gold', checked: false },
+    { value: 'blue', label: 'Blue', checked: false },
+    { value: 'black', label: 'Black', checked: false },
+])
+
+const brands = reactive([
+    { value: 'zulu', label: 'Zulu', checked: false },
+    { value: 'zara', label: 'Zara', checked: false },
+    { value: 'yellow box', label: 'Yellow Box', checked: false },
+    { value: 'timberland', label: 'Timberland', checked: false },
+    { value: 'sugar', label: 'Sugar', checked: false },
+    { value: 'sega', label: 'Sega', checked: false },
+    { value: 'razer', label: 'Razer', checked: false },
+    { value: 'puma', label: 'Puma', checked: false },
+    { value: 'paris', label: 'PARIS', checked: false },
+    { value: 'nixon', label: 'Nixon', checked: false },
+    { value: 'nike', label: 'Nike', checked: false },
+    { value: 'lacoste', label: 'Lacoste', checked: false },
+])
 const mobileFiltersOpen = ref(false)
 </script>

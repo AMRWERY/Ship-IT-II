@@ -5,20 +5,19 @@
             <p>Price and other details may vary based on product size and color.</p>
 
             <!-- search input -->
-            <form class="lg:w-2/5 flex mt-7 me-2 lg:justify-start">
+            <div class="px-6 py-4 md:flex md:justify-center md:items-center">
                 <div class="pt-2 relative text-gray-600">
                     <div class="absolute inset-y-0 end-0 flex items-center pe-3 pointer-events-none mt-2">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </div>
-                    <input type="text" id="table-search"
+                    <input type="text" id="table-search" v-model="searchQuery" @keyup="search"
                         class="block p-2 pe-10 text-sm text-gray-900 dark:text-white border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:border-gray-600 dark:placeholder-gray-600 dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         placeholder="Search Products...">
                 </div>
-            </form>
+            </div>
 
             <div class="mt-6 grid grid-cols-1 gap-x-6 gap-y-4 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-                <div v-for="product in store.filteredProducts.length > 0 ? store.filteredProducts : store.products"
-                    :key="product.id"
+                <div v-for="product in store.filteredProducts" :key="product.id"
                     class="relative m-5 w-full max-w-xs overflow-hidden rounded-lg bg-white shadow-md card-transit">
                     <router-link :to="'/carters-product/' + product.id">
                         <div>
@@ -59,12 +58,17 @@
 </template>
     
 <script setup>
-import { onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { useCartersProductsStore } from '@/stores/banner-products/cartersProductsStore'
 import Pagination from "@/reusable/Pagination.vue";
 import Rating from "@/reusable/Rating.vue";
 
 const store = useCartersProductsStore()
+const searchQuery = ref("");
+
+const search = () => {
+    store.searchProducts(searchQuery.value);
+};
 
 const props = defineProps(['filteredProducts']);
 
