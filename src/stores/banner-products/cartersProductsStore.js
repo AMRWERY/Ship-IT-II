@@ -69,6 +69,22 @@ export const useCartersProductsStore = defineStore("carters-products", {
       // console.log("Filtered products in store:", this.filteredProducts);
     },
 
+    filterProductsByColor(selectedColor) {
+      if (!selectedColor.length) {
+        this.filteredProducts = this.products;
+      } else {
+        this.filteredProducts = this.products.filter((product) => {
+          for (const colorSelected of selectedColor) {
+            if (product.color === colorSelected) {
+              return product;
+            }
+            return false;
+          }
+        });
+      }
+      // console.log("Filtered products in store:", this.filteredProducts);
+    },
+
     searchProducts(query) {
       this.filteredProducts = this.products.filter((product) =>
         product.title.toLowerCase().includes(query.toLowerCase())

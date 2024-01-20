@@ -28,6 +28,7 @@
 
                                 <!-- Filters -->
                                 <form class="mt-4 border-t border-gray-200">
+                                    <!-- Price -->
                                     <Disclosure as="div" class="border-t border-gray-200 px-4 py-6" v-slot="{ open }">
                                         <h3 class="-my-3 flow-root">
                                             <DisclosureButton
@@ -41,18 +42,19 @@
                                         </h3>
                                         <DisclosurePanel class="pt-6">
                                             <div class="space-y-4">
-                                                <form class="relative space-x-1 flex items-center">
+                                                <form class="relative space-x-1 flex items-center"
+                                                    @submit.prevent="filterProducts">
                                                     <div>
-                                                        <div class="mt-1 relative rounded-md shadow-sm"><input id="minPrice"
-                                                                name="minPrice"
+                                                        <div class="mt-1 relative rounded-md shadow-sm">
+                                                            <input id="minPrice" name="minPrice" v-model="minPrice"
                                                                 class="appearance-none block w-full border shadow-sm focus:outline-none sm:text-sm py-2 rounded-md border-gray-300 placeholder-gray-400 focus:ring-indigo-500 focus:border-indigo-500 px-2 flex-1 h-9"
                                                                 type="number" step="100" placeholder="min">
                                                         </div>
                                                     </div>
                                                     <span class="text-gray-600">To</span>
                                                     <div>
-                                                        <div class="mt-1 relative rounded-md shadow-sm"><input id="maxPrice"
-                                                                name="maxPrice"
+                                                        <div class="mt-1 relative rounded-md shadow-sm">
+                                                            <input id="maxPrice" name="maxPrice" v-model="maxPrice"
                                                                 class="appearance-none block w-full border shadow-sm focus:outline-none sm:text-sm  py-2 rounded-md border-gray-300 placeholder-gray-400 focus:ring-indigo-500 focus:border-indigo-500 px-2 flex-1 h-9"
                                                                 step="100" type="number" placeholder="max">
                                                         </div>
@@ -65,12 +67,12 @@
                                         </DisclosurePanel>
                                     </Disclosure>
 
-                                    <Disclosure as="div" v-for="section in filters" :key="section.id"
-                                        class="border-t border-gray-200 px-4 py-6" v-slot="{ open }">
-                                        <h3 class="-mx-2 -my-3 flow-root">
+                                    <!-- fulfillment -->
+                                    <Disclosure as="div" class="border-t border-gray-200 px-4 py-6" v-slot="{ open }">
+                                        <h3 class="-my-3 flow-root">
                                             <DisclosureButton
-                                                class="flex w-full items-center justify-between bg-white px-2 py-3 text-gray-400 hover:text-gray-500">
-                                                <span class="font-medium text-gray-900">{{ section.name }}</span>
+                                                class="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
+                                                <span class="font-medium text-gray-900">Fulfillment</span>
                                                 <span class="ml-6 flex items-center">
                                                     <i class="fa-solid fa-plus h-5 w-5" aria-hidden="true" v-if="!open"></i>
                                                     <i class="fa-solid fa-minus h-5 w-5" aria-hidden="true" v-else></i>
@@ -78,15 +80,67 @@
                                             </DisclosureButton>
                                         </h3>
                                         <DisclosurePanel class="pt-6">
-                                            <div class="space-y-6">
-                                                <div v-for="(option, optionIdx) in section.options" :key="option.value"
-                                                    class="flex items-center">
-                                                    <input :id="`filter-mobile-${section.id}-${optionIdx}`"
-                                                        :name="`${section.id}[]`" :value="option.value" type="checkbox"
-                                                        :checked="option.checked"
+                                            <div class="space-y-4">
+                                                <div v-for="ful in fulfillment" :key="ful.value" class="flex items-center">
+                                                    <input id="category" name="category" :value="ful.label" type="checkbox"
+                                                        :checked="ful.checked"
                                                         class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
-                                                    <label :for="`filter-mobile-${section.id}-${optionIdx}`"
-                                                        class="ml-3 min-w-0 flex-1 text-gray-500">{{ option.label }}</label>
+                                                    <label for="category" class="ml-3 text-sm text-gray-600">{{ ful.label
+                                                    }}</label>
+                                                </div>
+                                            </div>
+                                        </DisclosurePanel>
+                                    </Disclosure>
+
+                                    <!-- Categories -->
+                                    <Disclosure as="div" class="border-b border-gray-200 px-4 py-6" v-slot="{ open }">
+                                        <h3 class="-my-3 flow-root">
+                                            <DisclosureButton
+                                                class="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
+                                                <span class="font-medium text-gray-900">Categories</span>
+                                                <span class="ml-6 flex items-center">
+                                                    <i class="fa-solid fa-plus h-5 w-5" aria-hidden="true" v-if="!open"></i>
+                                                    <i class="fa-solid fa-minus h-5 w-5" aria-hidden="true" v-else></i>
+                                                </span>
+                                            </DisclosureButton>
+                                        </h3>
+                                        <DisclosurePanel class="pt-6">
+                                            <div class="space-y-4">
+                                                <div v-for="category in categories" :key="category.value"
+                                                    class="flex items-center">
+                                                    <input id="category" name="category" :value="category.label"
+                                                        type="checkbox" :checked="category.checked"
+                                                        class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                                        @change="category.checked = !category.checked; updateSelectedCategories(category.label, category.checked)" />
+                                                    <label for="category" class="ml-3 text-sm text-gray-600">{{
+                                                        category.label
+                                                    }}</label>
+                                                </div>
+                                            </div>
+                                        </DisclosurePanel>
+                                    </Disclosure>
+
+                                    <!-- Colors -->
+                                    <Disclosure as="div" class="border-b border-gray-200 px-4 py-6" v-slot="{ open }">
+                                        <h3 class="-my-3 flow-root">
+                                            <DisclosureButton
+                                                class="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
+                                                <span class="font-medium text-gray-900">Colors</span>
+                                                <span class="ml-6 flex items-center">
+                                                    <i class="fa-solid fa-plus h-5 w-5" aria-hidden="true" v-if="!open"></i>
+                                                    <i class="fa-solid fa-minus h-5 w-5" aria-hidden="true" v-else></i>
+                                                </span>
+                                            </DisclosureButton>
+                                        </h3>
+                                        <DisclosurePanel class="pt-6">
+                                            <div class="space-y-4">
+                                                <div v-for="color in colors" :key="color.value" class="flex items-center">
+                                                    <input id="color" name="color" :value="color.label" type="checkbox"
+                                                        :checked="color.checked"
+                                                        class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                                        @change="color.checked = !color.checked; updateSelectedColor(color.label, color.checked)" />
+                                                    <label for="color" class="ml-3 text-sm text-gray-600">{{ color.label
+                                                    }}</label>
                                                 </div>
                                             </div>
                                         </DisclosurePanel>
@@ -122,6 +176,7 @@
                     <div class="grid grid-cols-1 gap-x-8 gap-y-10 lg:grid-cols-5">
                         <!-- Filters -->
                         <form class="hidden lg:block">
+                            <!-- Price -->
                             <Disclosure as="div" class="border-b border-gray-200 py-6" v-slot="{ open }">
                                 <h3 class="-my-3 flow-root">
                                     <DisclosureButton
@@ -159,6 +214,32 @@
                                 </DisclosurePanel>
                             </Disclosure>
 
+                            <!-- fulfillment -->
+                            <Disclosure as="div" class="border-b border-gray-200 py-6" v-slot="{ open }">
+                                <h3 class="-my-3 flow-root">
+                                    <DisclosureButton
+                                        class="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
+                                        <span class="font-medium text-gray-900">Fulfillment</span>
+                                        <span class="ml-6 flex items-center">
+                                            <i class="fa-solid fa-plus h-5 w-5" aria-hidden="true" v-if="!open"></i>
+                                            <i class="fa-solid fa-minus h-5 w-5" aria-hidden="true" v-else></i>
+                                        </span>
+                                    </DisclosureButton>
+                                </h3>
+                                <DisclosurePanel class="pt-6">
+                                    <div class="space-y-4">
+                                        <div v-for="ful in fulfillment" :key="ful.value" class="flex items-center">
+                                            <input id="category" name="category" :value="ful.label" type="checkbox"
+                                                :checked="ful.checked"
+                                                class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" />
+                                            <label for="category" class="ml-3 text-sm text-gray-600">{{ ful.label
+                                            }}</label>
+                                        </div>
+                                    </div>
+                                </DisclosurePanel>
+                            </Disclosure>
+
+                            <!-- Categories -->
                             <Disclosure as="div" class="border-b border-gray-200 py-6" v-slot="{ open }">
                                 <h3 class="-my-3 flow-root">
                                     <DisclosureButton
@@ -178,6 +259,32 @@
                                                 class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                                 @change="category.checked = !category.checked; updateSelectedCategories(category.label, category.checked)" />
                                             <label for="category" class="ml-3 text-sm text-gray-600">{{ category.label
+                                            }}</label>
+                                        </div>
+                                    </div>
+                                </DisclosurePanel>
+                            </Disclosure>
+
+                            <!-- Colors -->
+                            <Disclosure as="div" class="border-b border-gray-200 py-6" v-slot="{ open }">
+                                <h3 class="-my-3 flow-root">
+                                    <DisclosureButton
+                                        class="flex w-full items-center justify-between bg-white py-3 text-sm text-gray-400 hover:text-gray-500">
+                                        <span class="font-medium text-gray-900">Colors</span>
+                                        <span class="ml-6 flex items-center">
+                                            <i class="fa-solid fa-plus h-5 w-5" aria-hidden="true" v-if="!open"></i>
+                                            <i class="fa-solid fa-minus h-5 w-5" aria-hidden="true" v-else></i>
+                                        </span>
+                                    </DisclosureButton>
+                                </h3>
+                                <DisclosurePanel class="pt-6">
+                                    <div class="space-y-4">
+                                        <div v-for="color in colors" :key="color.value" class="flex items-center">
+                                            <input id="color" name="color" :value="color.label" type="checkbox"
+                                                :checked="color.checked"
+                                                class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                                @change="color.checked = !color.checked; updateSelectedColor(color.label, color.checked)" />
+                                            <label for="color" class="ml-3 text-sm text-gray-600">{{ color.label
                                             }}</label>
                                         </div>
                                     </div>
@@ -206,6 +313,11 @@ const minPrice = ref('');
 const maxPrice = ref('');
 const store = useCartersProductsStore()
 const selectedCategories = ref([]);
+const selectedColor = ref([]);
+
+const filterProducts = () => {
+    store.filterProductsByPrice(minPrice.value, maxPrice.value);
+};
 
 const updateSelectedCategories = (categoryId, checked) => {
     if (checked) {
@@ -217,8 +329,14 @@ const updateSelectedCategories = (categoryId, checked) => {
     // console.log(updateSelectedCategories)
 };
 
-const filterProducts = () => {
-    store.filterProductsByPrice(minPrice.value, maxPrice.value);
+const updateSelectedColor = (color, checked) => {
+    if (checked) {
+        selectedColor.value.push(color);
+    } else {
+        selectedColor.value = selectedColor.value.filter((id) => id !== color);
+    }
+    store.filterProductsByColor(selectedColor.value);
+    // console.log(updateSelectedCategories)
 };
 
 const fulfillment = ref([
@@ -250,19 +368,5 @@ const colors = reactive([
     { value: 'black', label: 'Black', checked: false },
 ])
 
-const brands = reactive([
-    { value: 'zulu', label: 'Zulu', checked: false },
-    { value: 'zara', label: 'Zara', checked: false },
-    { value: 'yellow box', label: 'Yellow Box', checked: false },
-    { value: 'timberland', label: 'Timberland', checked: false },
-    { value: 'sugar', label: 'Sugar', checked: false },
-    { value: 'sega', label: 'Sega', checked: false },
-    { value: 'razer', label: 'Razer', checked: false },
-    { value: 'puma', label: 'Puma', checked: false },
-    { value: 'paris', label: 'PARIS', checked: false },
-    { value: 'nixon', label: 'Nixon', checked: false },
-    { value: 'nike', label: 'Nike', checked: false },
-    { value: 'lacoste', label: 'Lacoste', checked: false },
-])
 const mobileFiltersOpen = ref(false)
 </script>
